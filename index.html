@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Farewell 2k25 | Animated Picture Frame</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-top: 70px;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Banner Styles - Mobile First */
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid gold;
+            animation: bannerPulse 3s infinite;
+        }
+
+        .banner h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.8rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+                          0 0 10px rgba(255, 215, 0, 0.8);
+            letter-spacing: 1px;
+            position: relative;
+            padding: 0 40px;
+        }
+
+        .banner h1::before,
+        .banner h1::after {
+            content: "✨";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            animation: spin 4s linear infinite;
+        }
+
+        .banner h1::before {
+            left: 5px;
+        }
+
+        .banner h1::after {
+            right: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+            padding: 15px;
+            padding-top: 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Picture Frame - Mobile First */
+        .picture-frame {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            z-index: 20; /* Increased z-index but still below balloons */
+            border: 10px solid #d4af37;
+            box-sizing: content-box;
+            margin-bottom: 20px;
+            transform: translateZ(0); /* Force GPU rendering */
+        }
+
+        .picture-frame::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            pointer-events: none;
+        }
+
+        .picture-content {
+            width: 100%;
+            height: 100%;
+            background: url('MCA.jpg') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+            font-family: 'Dancing Script', cursive;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .overlay-text {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 2px solid gold;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        /* Download button - Mobile First */
+        .download-btn {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: auto;
+            white-space: nowrap;
+            transform: translateZ(0);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px) translateZ(0);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #00f2fe 0%, #4facfe 100%);
+        }
+
+        .download-btn:active {
+            transform: translateY(1px) translateZ(0);
+        }
+
+        /* Balloon styles - Optimized for Performance */
+        .balloon {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            border-radius: 50%;
+            z-index: 30; /* Higher than picture frame's z-index */
+            opacity: 0.9;
+            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .balloon::before {
+            content: '';
+            position: absolute;
+            width: 1px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.5);
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Sparkle styles - Optimized for Performance */
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            z-index: 35; /* Highest z-index to ensure it's on top */
+            box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+            transform: translateZ(0);
+            will-change: transform, opacity;
+        }
+
+        .large-sparkle {
+            width: 15px;
+            height: 15px;
+        }
+
+        /* Confetti styles - Optimized for Performance */
+        .confetti {
+            position: absolute;
+            width: 6px;
+            height: 10px;
+            background: linear-gradient(45deg, #ff5252, #ffd740, #69f0ae, #448aff, #e040fb);
+            z-index: 5;
+            opacity: 0.8;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(var(--rotation, 0deg));
+            }
+            50% {
+                transform: translateY(-20px) rotate(calc(var(--rotation, 0deg) + 5deg));
+            }
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+
+        @keyframes largeSparkle {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.8) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bannerPulse {
+            0%, 100% {
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+            }
+            50% {
+                box-shadow: 0 3px 15px rgba(255, 215, 0, 0.5);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-50%) rotate(360deg);
+            }
+        }
+
+        /* Corner decorations - Mobile Optimized */
+        .corner-decoration {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 16;
+            transform: translateZ(0);
+        }
+
+        .top-left {
+            top: -5px;
+            left: -5px;
+            transform: rotate(0deg) translateZ(0);
+        }
+
+        .top-right {
+            top: -5px;
+            right: -5px;
+            transform: rotate(90deg) translateZ(0);
+        }
+
+        .bottom-left {
+            bottom: -5px;
+            left: -5px;
+            transform: rotate(270deg) translateZ(0);
+        }
+
+        .bottom-right {
+            bottom: -5px;
+            right: -5px;
+            transform: rotate(180deg) translateZ(0);
+        }
+
+        /* Tablet Styles */
+        @media (min-width: 600px) {
+            .banner {
+                height: 80px;
+            }
+            
+            .banner h1 {
+                font-size: 2.2rem;
+                padding: 0 50px;
+            }
+            
+            .banner h1::before,
+            .banner h1::after {
+                font-size: 1.5rem;
+            }
+            
+            .banner h1::before {
+                left: 10px;
+            }
+            
+            .banner h1::after {
+                right: 10px;
+            }
+            
+            .container {
+                padding-top: 40px;
+            }
+            
+            .picture-frame {
+                border-width: 12px;
+                border-radius: 10px;
+            }
+            
+            .picture-content {
+                font-size: 2rem;
+            }
+            
+            .overlay-text {
+                padding: 20px 30px;
+            }
+            
+            .download-btn {
+                padding: 14px 28px;
+                font-size: 1.1rem;
+            }
+            
+            .balloon {
+                width: 30px;
+                height: 45px;
+            }
+            
+            .sparkle {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .large-sparkle {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .confetti {
+                width: 8px;
+                height: 12px;
+            }
+            
+            .corner-decoration {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 900px) {
+            body {
+                padding-top: 100px;
+            }
+            
+            .banner {
+                height: 100px;
+            }
+            
+            .banner h1 {
+                font-size: 3rem;
+                padding: 0 60px;
+                letter-spacing: 2px;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                               0 0 20px rgba(255, 215, 0, 0.8);
+            }
+            
+            .banner h1::before,
+            .banner h1::after {
+                font-size: 2rem;
+            }
+            
+            .banner h1::before {
+                left: 15px;
+            }
+            
+            .banner h1::after {
+                right: 15px;
+            }
+            
+            .container {
+                padding-top: 50px;
+                min-height: calc(100vh - 100px);
+            }
+            
+            .picture-frame {
+                width: 90%;
+                border-width: 15px;
+                border-radius: 12px;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            }
+            
+            .picture-content {
+                font-size: 2.5rem;
+            }
+            
+            .overlay-text {
+                padding: 25px 40px;
+                max-width: 80%;
+            }
+            
+            .download-btn {
+                padding: 15px 30px;
+                font-size: 1.2rem;
+            }
+            
+            .balloon {
+                width: 40px;
+                height: 60px;
+            }
+            
+            .balloon::before {
+                height: 50px;
+                bottom: -50px;
+            }
+            
+            .sparkle {
+                width: 12px;
+                height: 12px;
+            }
+            
+            .large-sparkle {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .confetti {
+                width: 10px;
+                height: 15px;
+            }
+            
+            .corner-decoration {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Large Desktop Styles */
+        @media (min-width: 1200px) {
+            .picture-frame {
+                width: 80%;
+            }
+            
+            .banner h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Very Small Mobile Devices */
+        @media (max-width: 350px) {
+            .banner h1 {
+                font-size: 1.5rem;
+                padding: 0 35px;
+            }
+            
+            .banner h1::before,
+            .banner h1::after {
+                font-size: 1rem;
+            }
+            
+            .picture-content {
+                font-size: 1.3rem;
+            }
+            
+            .overlay-text {
+                padding: 12px 20px;
+            }
+            
+            .download-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .balloon {
+                width: 22px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Farewell Banner -->
+    <div class="banner">
+        <h1>Farewell 2k25</h1>
+    </div>
+
+    <div class="container">
+        <div class="picture-frame">
+            <!-- Corner decorations -->
+            <div class="corner-decoration top-left">
+                <svg viewBox="0 0 50 50">
+                    <path d="M0,50 L50,0 L45,0 L0,45 Z" fill="#d4af37" />
+                    <path d="M0,50 L10,40 L40,10 L50,0" stroke="#fff" stroke-width="2" fill="none" />
+                </svg>
+            </div>
+            <div class="corner-decoration top-right">
+                <svg viewBox="0 0 50 50">
+                    <path d="M0,50 L50,0 L45,0 L0,45 Z" fill="#d4af37" />
+                    <path d="M0,50 L10,40 L40,10 L50,0" stroke="#fff" stroke-width="2" fill="none" />
+                </svg>
+            </div>
+            <div class="corner-decoration bottom-left">
+                <svg viewBox="0 0 50 50">
+                    <path d="M0,50 L50,0 L45,0 L0,45 Z" fill="#d4af37" />
+                    <path d="M0,50 L10,40 L40,10 L50,0" stroke="#fff" stroke-width="2" fill="none" />
+                </svg>
+            </div>
+            <div class="corner-decoration bottom-right">
+                <svg viewBox="0 0 50 50">
+                    <path d="M0,50 L50,0 L45,0 L0,45 Z" fill="#d4af37" />
+                    <path d="M0,50 L10,40 L40,10 L50,0" stroke="#fff" stroke-width="2" fill="none" />
+                </svg>
+            </div>
+            
+            <div class="picture-content">
+                <!-- <div class="overlay-text">
+                    Memories to Treasure Forever
+                </div> -->
+            </div>
+        </div>
+        
+        <!-- Download Button -->
+        <button class="download-btn" id="downloadBtn">
+            <i class="fas fa-download"></i> Download Memory
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create a container for animation elements
+            const animationContainer = document.createElement('div');
+            animationContainer.id = 'animation-container';
+            animationContainer.style.position = 'fixed';
+            animationContainer.style.top = '0';
+            animationContainer.style.left = '0';
+            animationContainer.style.width = '100%';
+            animationContainer.style.height = '100%';
+            animationContainer.style.pointerEvents = 'none';
+            animationContainer.style.zIndex = '25'; /* Between frame and balloons */
+            document.body.appendChild(animationContainer);
+
+            // Adjust animation elements based on screen size
+            function getElementSizes() {
+                const isMobile = window.innerWidth < 600;
+                const isTablet = window.innerWidth >= 600 && window.innerWidth < 900;
+                
+                return {
+                    balloonCount: isMobile ? 12 : isTablet ? 15 : 18,
+                    sparkleCount: isMobile ? 50 : isTablet ? 60 : 70,
+                    confettiCount: isMobile ? 70 : isTablet ? 80 : 90,
+                    balloonSize: isMobile ? [22, 30] : isTablet ? [28, 40] : [35, 50]
+                };
+            }
+
+            // Create balloons with optimized performance
+            function createBalloons() {
+                const sizes = getElementSizes();
+                const colors = [
+                    '#FF5252', '#FF4081', '#E040FB', '#7C4DFF', 
+                    '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', 
+                    '#64FFDA', '#69F0AE', '#B2FF59', '#EEFF41', 
+                    '#FFFF00', '#FFD740', '#FFAB40', '#FF6E40'
+                ];
+                
+                for (let i = 0; i < sizes.balloonCount; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    
+                    // Random properties with responsive sizing
+                    const size = Math.random() * 8 + sizes.balloonSize[0];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const left = Math.random() * 100;
+                    const duration = Math.random() * 4 + 8;
+                    const sway = Math.random() * 80 - 40;
+                    const delay = Math.random() * 5;
+                    
+                    // Apply styles
+                    balloon.style.width = `${size}px`;
+                    balloon.style.height = `${size * 1.25}px`;
+                    balloon.style.backgroundColor = color;
+                    balloon.style.left = `${left}%`;
+                    balloon.style.bottom = `-${size * 1.25 + 50}px`;
+                    balloon.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+                    balloon.style.setProperty('--sway', `${sway}px`);
+                    
+                    // Add slight rotation to balloon tail
+                    balloon.style.setProperty('--rotation', `${Math.random() * 20 - 10}deg`);
+                    
+                    animationContainer.appendChild(balloon);
+                    animateBalloon(balloon, size);
+                }
+            }
+
+            // Optimized balloon animation using requestAnimationFrame
+            function animateBalloon(balloon, size) {
+                let lastTime = 0;
+                const start = Date.now();
+                const duration = Math.random() * 25000 + 20000; // 20-45 seconds
+                const startBottom = - (size * 1.25 + 50);
+                const endBottom = window.innerHeight + size;
+                
+                function update(timestamp) {
+                    if (!lastTime) lastTime = timestamp;
+                    
+                    const time = Date.now() - start;
+                    const progress = Math.min(time / duration, 1);
+                    const bottom = startBottom + (endBottom - startBottom) * progress;
+                    
+                    balloon.style.bottom = `${bottom}px`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        balloon.style.bottom = `${startBottom}px`;
+                        setTimeout(() => {
+                            requestAnimationFrame(update);
+                            start = Date.now();
+                        }, 1000);
+                    }
+                    
+                    lastTime = timestamp;
+                }
+                
+                requestAnimationFrame(update);
+            }
+
+            // Create sparkles with optimized performance
+            function createSparkles() {
+                const sizes = getElementSizes();
+                
+                for (let i = 0; i < sizes.sparkleCount; i++) {
+                    const sparkle = document.createElement('div');
+                    const isLarge = Math.random() > 0.7;
+                    sparkle.className = isLarge ? 'sparkle large-sparkle' : 'sparkle';
+                    
+                    // Random properties
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    const delay = Math.random() * 2;
+                    const duration = Math.random() * 1.5 + 1;
+                    const size = isLarge ? sizes.sparkleSize?.[1] || 15 : sizes.sparkleSize?.[0] || 8;
+                    
+                    // Apply styles and animation
+                    sparkle.style.width = `${size}px`;
+                    sparkle.style.height = `${size}px`;
+                    sparkle.style.left = `${left}%`;
+                    sparkle.style.top = `${top}%`;
+                    sparkle.style.animation = `${isLarge ? 'largeSparkle' : 'sparkle'} ${duration}s ease-in-out ${delay}s infinite`;
+                    
+                    animationContainer.appendChild(sparkle);
+                    moveSparkle(sparkle);
+                }
+            }
+
+            // Optimized sparkle movement
+            function moveSparkle(sparkle) {
+                const startLeft = parseFloat(sparkle.style.left);
+                const startTop = parseFloat(sparkle.style.top);
+                const moveX = Math.random() * 2 - 1;
+                const moveY = Math.random() * 2 - 1;
+                const duration = Math.random() * 8000 + 8000;
+                const start = Date.now();
+                let lastTime = 0;
+                
+                function update(timestamp) {
+                    if (!lastTime) lastTime = timestamp;
+                    
+                    const time = Date.now() - start;
+                    const progress = Math.min(time / duration, 1);
+                    
+                    const left = startLeft + moveX * progress * (window.innerWidth < 600 ? 4 : 6);
+                    const top = startTop + moveY * progress * (window.innerWidth < 600 ? 4 : 6);
+                    
+                    sparkle.style.left = `${left}%`;
+                    sparkle.style.top = `${top}%`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        setTimeout(() => {
+                            sparkle.style.left = `${startLeft}%`;
+                            sparkle.style.top = `${startTop}%`;
+                            moveSparkle(sparkle);
+                        }, 1000);
+                    }
+                    
+                    lastTime = timestamp;
+                }
+                
+                requestAnimationFrame(update);
+            }
+
+            // Create confetti with optimized performance
+            function createConfetti() {
+                const sizes = getElementSizes();
+                const confettiCount = sizes.confettiCount;
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random properties
+                    const left = Math.random() * 100;
+                    const width = window.innerWidth < 600 ? Math.random() * 5 + 3 : window.innerWidth < 900 ? Math.random() * 6 + 4 : Math.random() * 8 + 5;
+                    const height = window.innerWidth < 600 ? Math.random() * 10 + 8 : window.innerWidth < 900 ? Math.random() * 12 + 10 : Math.random() * 15 + 12;
+                    const delay = Math.random() * 5;
+                    const duration = Math.random() * 5 + 7;
+                    const rotation = Math.random() * 360;
+                    
+                    // Apply styles and animation
+                    confetti.style.width = `${width}px`;
+                    confetti.style.height = `${height}px`;
+                    confetti.style.left = `${left}%`;
+                    confetti.style.top = `-${height}px`;
+                    confetti.style.animation = `confettiFall ${duration}s linear ${delay}s infinite`;
+                    confetti.style.transform = `rotate(${rotation}deg)`;
+                    
+                    animationContainer.appendChild(confetti);
+                }
+            }
+
+            // Initialize animations with optimized settings
+            createBalloons();
+            createSparkles();
+            createConfetti();
+
+            // Download functionality
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            downloadBtn.addEventListener('click', function() {
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Memory...';
+                downloadBtn.disabled = true;
+                
+                // Hide animation container during screenshot
+                animationContainer.style.opacity = '0';
+
+                html2canvas(document.querySelector('.picture-frame')).then(canvas => {
+                    const image = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = image;
+                    link.download = 'farewell-2k25-memory.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                    
+                    // Show animation container again
+                    animationContainer.style.opacity = '1';
+                });
+            });
+
+            // Handle window resize with debounce and optimized refresh
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    // Recreate animations for new screen size
+                    animationContainer.innerHTML = '';
+                    createBalloons();
+                    createSparkles();
+                    createConfetti();
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
